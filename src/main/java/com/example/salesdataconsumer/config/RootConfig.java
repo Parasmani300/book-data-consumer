@@ -17,24 +17,24 @@ public class RootConfig {
 
     public static final String GROUP_ID = "sales-101";
     @Bean
-    public ConsumerFactory<String,Object> consumerFactory()
+    public ConsumerFactory<String,String> consumerFactory()
     {
         Map<String,Object> props = new HashMap<>();
         props.put(ConsumerConfig.BOOTSTRAP_SERVERS_CONFIG,"localhost:9092");
         props.put(ConsumerConfig.GROUP_ID_CONFIG,GROUP_ID);
-//        props.put(ConsumerConfig.KEY_DESERIALIZER_CLASS_CONFIG, StringDeserializer.class);
-//        props.put(ConsumerConfig.VALUE_DESERIALIZER_CLASS_CONFIG,JsonDeserializer.class);
+        props.put(ConsumerConfig.KEY_DESERIALIZER_CLASS_CONFIG, StringDeserializer.class);
+        props.put(ConsumerConfig.VALUE_DESERIALIZER_CLASS_CONFIG,JsonDeserializer.class);
 
-        return new DefaultKafkaConsumerFactory<>(props,
+        return new DefaultKafkaConsumerFactory<String, String>(props,
                 new StringDeserializer(),
-                new JsonDeserializer<>(Object.class)
+                new StringDeserializer()
         );
     }
 
     @Bean
-    public ConcurrentKafkaListenerContainerFactory<String,Object> concurrentKafkaListenerContainerFactory()
+    public ConcurrentKafkaListenerContainerFactory<String,String> concurrentKafkaListenerContainerFactory()
     {
-        ConcurrentKafkaListenerContainerFactory<String,Object> factory = new ConcurrentKafkaListenerContainerFactory<>();
+        ConcurrentKafkaListenerContainerFactory<String,String> factory = new ConcurrentKafkaListenerContainerFactory<>();
         factory.setConsumerFactory(consumerFactory());
 
         return  factory;
